@@ -187,8 +187,6 @@ class UserRepository(BaseRepository[LiteLLM_UserTable]):
             existing: Final = await transaction.litellm_usertable.find_unique(where={"user_id": data["user_id"]})
             if existing is not None:
                 return existing
-            if await _count_billable_users(transaction.litellm_usertable) >= 5:
-                return None
             return await transaction.litellm_usertable.upsert(
                 where={"user_id": data["user_id"]}, data={"create": dict(data), "update": {}}
             )
